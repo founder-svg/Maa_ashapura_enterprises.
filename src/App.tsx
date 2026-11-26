@@ -42,7 +42,10 @@ export const App: React.FC = () => {
 
   const handleSendWhatsApp = (inv: Invoice) => {
     const link = createWhatsAppInvoiceLink(inv, agency.name, agency.phone);
-    window.open(link, '_blank');
+    const win = window.open(link, '_blank', 'noopener,noreferrer');
+    if (!win) {
+      window.location.href = link;
+    }
   };
 
   const handleInvoiceCreated = (inv: Invoice) => {

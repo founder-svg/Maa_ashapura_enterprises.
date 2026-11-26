@@ -16,6 +16,7 @@ import { useLPGStore } from '../store/useLPGStore';
 import { formatINR } from '../utils/gstCalculator';
 import { Invoice } from '../types';
 import { NavTab } from '../components/Sidebar';
+import { createWhatsAppInvoiceLink } from '../utils/whatsappHelper';
 
 interface DashboardViewProps {
   onNavigateTab: (tab: NavTab) => void;
@@ -264,14 +265,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       </td>
                       <td className="py-2.5 text-right">
                         <div className="flex items-center justify-end gap-1.5">
-                          {/* WhatsApp CTA */}
-                          <button
-                            onClick={() => onSendWhatsApp(inv)}
-                            className="p-1.5 rounded-lg text-emerald-700 hover:bg-emerald-100 transition-colors"
+                          {/* WhatsApp Direct Link (Bypasses popup blocker) */}
+                          <a
+                            href={createWhatsAppInvoiceLink(inv)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg text-emerald-700 hover:bg-emerald-100 transition-colors inline-flex items-center justify-center cursor-pointer"
                             title="Send invoice via WhatsApp"
                           >
                             <Share2 className="w-3.5 h-3.5" />
-                          </button>
+                          </a>
                           {/* View Invoice */}
                           <button
                             onClick={() => onSelectInvoice(inv)}
