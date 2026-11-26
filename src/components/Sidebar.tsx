@@ -13,8 +13,11 @@ import {
   Settings, 
   Database,
   CalendarCheck,
-  Package
+  Package,
+  ExternalLink
 } from 'lucide-react';
+import logoCylinders from '../assets/logo-cylinders.png';
+import wixfoxLogo from '../assets/wixfox-logo.png';
 
 export type NavTab = 
   | 'dashboard' 
@@ -97,7 +100,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-xl bg-white p-0.5 flex items-center justify-center shadow-lg shadow-orange-600/20 border border-slate-700/80 overflow-hidden shrink-0">
               <img 
-                src="./logo-cylinders.png" 
+                src={logoCylinders} 
                 alt="Go Gas Cylinders Logo" 
                 className="w-full h-full object-contain"
               />
@@ -160,7 +163,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Agency quick footer info */}
-        <div className="p-3 border-t border-slate-800 bg-slate-950/60">
+        <div className="p-3 border-t border-slate-800 bg-slate-950/60 space-y-2">
           <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-slate-800/50">
             <div className="w-7 h-7 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-xs">
               BP
@@ -171,6 +174,33 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
             <span className="w-2 h-2 rounded-full bg-emerald-400" title="Cloud DB Connected"></span>
           </div>
+
+          {/* Engineered by Wixfox Technologies */}
+          <a
+            href="https://www.wixfox.com"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 transition-all group"
+            title="Visit Wixfox Technologies Official Website"
+          >
+            <div className="w-8 h-8 rounded-lg bg-slate-950 p-0.5 border border-slate-700/80 flex items-center justify-center shrink-0 overflow-hidden group-hover:border-orange-500/50 transition-colors">
+              <img
+                src={wixfoxLogo}
+                alt="Wixfox Technologies Logo"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[9px] text-slate-400 uppercase font-bold tracking-wider">Engineered By</p>
+              <p className="text-xs font-extrabold text-white group-hover:text-orange-400 transition-colors truncate">
+                Wixfox Technologies
+              </p>
+              <p className="text-[10px] text-slate-500 truncate flex items-center gap-1">
+                <span>www.wixfox.com</span>
+                <ExternalLink className="w-2.5 h-2.5 text-slate-400" />
+              </p>
+            </div>
+          </a>
         </div>
       </aside>
     </>

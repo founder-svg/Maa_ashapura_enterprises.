@@ -14,6 +14,8 @@ import {
 import { Invoice, AgencyProfile } from '../types';
 import { formatINR } from '../utils/gstCalculator';
 import { createWhatsAppInvoiceLink } from '../utils/whatsappHelper';
+import logoCylinders from '../assets/logo-cylinders.png';
+import wixfoxLogo from '../assets/wixfox-logo.png';
 
 interface InvoicePrintModalProps {
   invoice: Invoice | null;
@@ -94,7 +96,7 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-white p-1 border border-slate-200 flex items-center justify-center shadow-xs shrink-0">
                     <img 
-                      src="./logo-cylinders.png" 
+                      src={logoCylinders} 
                       alt="Maa Ashapura Cylinders" 
                       className="w-full h-full object-contain"
                     />
@@ -297,6 +299,11 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({
                 <p>A/C No: <strong className="text-slate-900 font-mono">{agency.bankAccountNo}</strong></p>
                 <p>IFSC: <strong className="text-slate-900 font-mono">{agency.bankIfsc}</strong></p>
                 <p>UPI ID: <strong className="text-blue-900 font-mono">{agency.upiId}</strong></p>
+                
+                <div className="mt-3 flex items-center gap-1.5 text-[9px] text-slate-400">
+                  <img src={wixfoxLogo} alt="Wixfox" className="w-3.5 h-3.5 object-contain" />
+                  <span>Software Engineered by <a href="https://www.wixfox.com" target="_blank" rel="noreferrer" className="underline hover:text-slate-600">Wixfox Technologies</a></span>
+                </div>
               </div>
 
               <div className="sm:text-right flex flex-col justify-between">
