@@ -91,9 +91,13 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({
             {/* Invoice Top Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b-2 border-slate-900">
               <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-orange-600 text-white flex items-center justify-center font-bold">
-                    <Flame className="w-5 h-5" />
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-white p-1 border border-slate-200 flex items-center justify-center shadow-xs shrink-0">
+                    <img 
+                      src="./logo-cylinders.png" 
+                      alt="Maa Ashapura Cylinders" 
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                   <div>
                     <h2 className="text-xl font-extrabold text-blue-950 uppercase tracking-tight">

@@ -95,8 +95,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Brand Banner */}
         <div className="p-4 border-b border-slate-800 bg-slate-950/70">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-400 flex items-center justify-center text-white shadow-lg shadow-orange-600/30 font-bold">
-              <Flame className="w-6 h-6 animate-pulse" />
+            <div className="w-11 h-11 rounded-xl bg-white p-0.5 flex items-center justify-center shadow-lg shadow-orange-600/20 border border-slate-700/80 overflow-hidden shrink-0">
+              <img 
+                src="./logo-cylinders.png" 
+                alt="Go Gas Cylinders Logo" 
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
               <h1 className="font-extrabold text-white text-sm tracking-tight leading-tight">
