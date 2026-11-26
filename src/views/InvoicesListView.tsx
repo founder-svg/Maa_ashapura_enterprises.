@@ -15,7 +15,7 @@ import { useLPGStore } from '../store/useLPGStore';
 import { Invoice } from '../types';
 import { formatINR } from '../utils/gstCalculator';
 import { generateTallyCSV, downloadFile } from '../utils/tallyExporter';
-import { createWhatsAppInvoiceLink } from '../utils/whatsappHelper';
+import { lpgPdfGenerator } from '../utils/lpgPdfGenerator';
 
 interface InvoicesListViewProps {
   onSelectInvoice: (inv: Invoice) => void;
@@ -175,21 +175,27 @@ export const InvoicesListView: React.FC<InvoicesListViewProps> = ({
                     </td>
                     <td className="py-3 px-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        {/* WhatsApp Direct Link (No popup blocker) */}
-                        <a
-                          href={createWhatsAppInvoiceLink(inv)}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        {/* Direct PDF Download */}
+                        <button
+                          onClick={() => lpgPdfGenerator.downloadInvoicePdf(inv)}
+                          className="p-1.5 rounded-lg text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer"
+                          title="Download Invoice Vector PDF file"
+                        >
+                          <Download className="w-4 h-4" />
+                        </button>
+                        {/* WhatsApp PDF Share Modal */}
+                        <button
+                          onClick={() => onSendWhatsApp(inv)}
                           className="flex items-center gap-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-semibold px-2.5 py-1.5 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
-                          title="Send GST bill on WhatsApp"
+                          title="Send GST invoice in PDF file to WhatsApp"
                         >
                           <Share2 className="w-3.5 h-3.5" />
-                          <span className="hidden md:inline">WhatsApp</span>
-                        </a>
+                          <span className="hidden md:inline">WhatsApp PDF</span>
+                        </button>
                         {/* View / Print */}
                         <button
                           onClick={() => onSelectInvoice(inv)}
-                          className="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+                          className="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
                           title="Print / View Invoice"
                         >
                           <Printer className="w-4 h-4 text-blue-600" />

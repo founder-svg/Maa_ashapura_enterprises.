@@ -14,7 +14,11 @@ import { useLPGStore } from '../store/useLPGStore';
 import { Customer, CustomerCategory } from '../types';
 import { formatINR } from '../utils/gstCalculator';
 
-export const CustomersView: React.FC = () => {
+interface CustomersViewProps {
+  onShareStatement?: (customer: Customer) => void;
+}
+
+export const CustomersView: React.FC<CustomersViewProps> = ({ onShareStatement }) => {
   const { customers, addCustomer } = useLPGStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'All' | CustomerCategory>('All');
@@ -182,15 +186,15 @@ export const CustomersView: React.FC = () => {
 
             <div className="pt-2 border-t border-slate-100 flex justify-between items-center text-xs">
               <span className="text-slate-400 font-medium">Credit Limit: ₹{c.creditLimit.toLocaleString()}</span>
-              <a 
-                href={`https://wa.me/91${c.phone}`} 
-                target="_blank" 
-                rel="noreferrer"
-                className="text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1"
+              <button 
+                type="button"
+                onClick={() => onShareStatement && onShareStatement(c)} 
+                className="text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 cursor-pointer"
+                title="Send official Customer Ledger Statement PDF to WhatsApp"
               >
                 <Share2 className="w-3.5 h-3.5" />
-                <span>Message</span>
-              </a>
+                <span>Statement PDF</span>
+              </button>
             </div>
           </div>
         ))}

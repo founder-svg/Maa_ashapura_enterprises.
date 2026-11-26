@@ -11,11 +11,13 @@ import {
   Mail,
   MapPin,
   Copy,
-  Check
+  Check,
+  FileText
 } from 'lucide-react';
 import { Invoice, AgencyProfile } from '../types';
 import { formatINR } from '../utils/gstCalculator';
-import { createWhatsAppInvoiceLink, formatWhatsAppMessage } from '../utils/whatsappHelper';
+import { lpgPdfGenerator } from '../utils/lpgPdfGenerator';
+import { WhatsAppModal } from './WhatsAppModal';
 import logoCylinders from '../assets/logo-cylinders.png';
 import wixfoxLogo from '../assets/wixfox-logo.png';
 
@@ -32,101 +34,73 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({
 }) => {
   if (!invoice) return null;
 
-  const [phone, setPhone] = useState(invoice.customerPhone || '');
-  const [copied, setCopied] = useState(false);
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleCopyMessage = () => {
-    const text = formatWhatsAppMessage(invoice, agency.name, agency.phone);
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+  const handleDownloadPdf = () => {
+    lpgPdfGenerator.downloadInvoicePdf(invoice, agency);
   };
 
-  const waLink = createWhatsAppInvoiceLink(invoice, agency.name, agency.phone, phone);
-
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-      {/* Modal Container */}
-      <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-auto overflow-hidden flex flex-col max-h-[95vh]">
-        {/* Top bar controls (no-print) */}
-        <div className="no-print bg-slate-900 text-white px-5 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-sm">Invoice Preview: {invoice.invoiceNumber}</span>
-            <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
-              invoice.status === 'Paid' 
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
-                : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-            }`}>
-              {invoice.status}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* WhatsApp Phone Number Input */}
-            <div className="flex items-center gap-1.5 bg-slate-800 px-2 py-1 rounded-lg border border-slate-700 text-xs text-slate-300" title="Customer WhatsApp Number">
-              <Phone className="w-3 h-3 text-emerald-400 shrink-0" />
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="WhatsApp No"
-                className="w-28 bg-transparent text-white font-mono text-xs outline-none placeholder-slate-500"
-              />
+    <>
+      <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        {/* Modal Container */}
+        <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-auto overflow-hidden flex flex-col max-h-[95vh]">
+          {/* Top bar controls (no-print) */}
+          <div className="no-print bg-slate-900 text-white px-5 py-3 flex flex-wrap items-center justify-between gap-3 border-b border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-sm">Invoice Preview: {invoice.invoiceNumber}</span>
+              <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                invoice.status === 'Paid' 
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+              }`}>
+                {invoice.status}
+              </span>
             </div>
 
-            {/* Direct WhatsApp Anchor Link (Never blocked by popup blockers) */}
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer"
-              title="Open directly in WhatsApp Web or Mobile App"
-            >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>Send WhatsApp</span>
-            </a>
+            <div className="flex items-center gap-2">
+              {/* Download Vector PDF Button */}
+              <button
+                onClick={handleDownloadPdf}
+                className="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition-all active:scale-95 cursor-pointer"
+                title="Download official vector PDF bill file"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download PDF</span>
+              </button>
 
-            {/* Copy Bill Text Button */}
-            <button
-              onClick={handleCopyMessage}
-              className="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-              title="Copy formatted invoice message to clipboard"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Copy Text</span>
-                </>
-              )}
-            </button>
+              {/* Share PDF on WhatsApp Button */}
+              <button
+                onClick={() => setShowWhatsAppModal(true)}
+                className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
+                title="Send invoice in PDF format to customer via WhatsApp"
+              >
+                <Share2 className="w-3.5 h-3.5" />
+                <span>Send PDF on WhatsApp</span>
+              </button>
 
-            {/* Print Button */}
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition-all"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              <span>Print</span>
-            </button>
+              {/* Print Button */}
+              <button
+                onClick={handlePrint}
+                className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold shadow-xs transition-all cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Print</span>
+              </button>
 
-            {/* Close Button */}
-            <button
-              onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-white rounded-lg transition-colors ml-2"
-            >
-              <X className="w-5 h-5" />
-            </button>
+              {/* Close Button */}
+              <button
+                onClick={onClose}
+                className="p-1.5 text-slate-400 hover:text-white rounded-lg transition-colors ml-2 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
-        </div>
 
         {/* Invoice Printable Document Sheet */}
         <div className="p-6 sm:p-8 overflow-y-auto text-slate-800 text-xs bg-white print:p-0">
@@ -364,5 +338,16 @@ export const InvoicePrintModal: React.FC<InvoicePrintModalProps> = ({
         </div>
       </div>
     </div>
+
+      {/* Dedicated WhatsApp PDF Modal */}
+      {showWhatsAppModal && (
+        <WhatsAppModal
+          isOpen={showWhatsAppModal}
+          onClose={() => setShowWhatsAppModal(false)}
+          invoice={invoice}
+          agency={agency}
+        />
+      )}
+    </>
   );
 };
